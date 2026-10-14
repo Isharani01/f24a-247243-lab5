@@ -17,10 +17,37 @@
     <tbody></tbody>
   </table>
 
-  
+    <form id="wait" novalidate>
+    <input type="text" id="who" name="who" placeholder="Name">
+    <input type="text" id="mins" name="mins" placeholder="Minutes">
+    <select id="bay" name="bay">
+      <option>Bay 1</option>
+      <option>Bay 2</option>
+    </select>
+    <button type="submit" id="join">Join</button>
+    <button type="button" id="call">Call next</button>
+  </form>
 
   <p>Waiting: <span id="waiting">0</span></p>
   <p>Longest: <span id="longest">0</span></p>
   <footer>247243</footer>
+
+    <script>
+    const form = document.querySelector("#wait");
+    const joinBtn = document.querySelector("#join");
+    const callBtn = document.querySelector("#call");
+
+    if (!joinBtn || !callBtn) throw new Error("button missing");
+
+    function onJoin(event) {
+      event.preventDefault();
+    }
+
+    function onCall() {
+    }
+
+    form.addEventListener("submit", onJoin);
+    callBtn.addEventListener("click", onCall);
+  </script>
 </body>
 </html>
