@@ -32,15 +32,41 @@
   <p>Longest: <span id="longest">0</span></p>
   <footer>247243</footer>
 
-    <script>
+  <script>
     const form = document.querySelector("#wait");
     const joinBtn = document.querySelector("#join");
     const callBtn = document.querySelector("#call");
 
     if (!joinBtn || !callBtn) throw new Error("button missing");
 
+    let rows = [];
+
+    function draw() {
+      const body = document.querySelector("tbody");
+      body.innerHTML = "";
+      for (const r of rows) {
+        const tr = document.createElement("tr");
+        for (const v of [r.name, r.mins, r.bay]) {
+          const td = document.createElement("td");
+          td.textContent = v;
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+      }
+      const nums = rows.map(r => r.mins).filter(Number.isFinite);
+      document.querySelector("#waiting").textContent = rows.length;
+      document.querySelector("#longest").textContent = nums.length ? Math.max(...nums) : 0;
+    }
+
     function onJoin(event) {
       event.preventDefault();
+      const fd = new FormData(form);
+      const name = fd.get("who");
+      const bay = fd.get("bay");
+      const mins = Number(fd.get("mins"));
+
+      rows.push({ name: name.trim(), mins: mins, bay: bay });
+      draw();
     }
 
     function onCall() {
