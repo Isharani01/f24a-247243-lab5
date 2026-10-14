@@ -58,14 +58,20 @@
       document.querySelector("#longest").textContent = nums.length ? Math.max(...nums) : 0;
     }
 
-    function onJoin(event) {
+        function onJoin(event) {
       event.preventDefault();
       const fd = new FormData(form);
       const name = fd.get("who");
       const bay = fd.get("bay");
       const mins = Number(fd.get("mins"));
 
-      rows.push({ name: name.trim(), mins: mins, bay: bay });
+      const clean = name.trim();
+      const found = rows.find(r => r.name === clean && r.bay === bay);
+      if (found) found.mins += mins;
+      else rows.push({ name: clean, mins: mins, bay: bay });
+
+      document.querySelector("#who").value = "";
+      document.querySelector("#mins").value = "";
       draw();
     }
 
