@@ -37,6 +37,9 @@
     const joinBtn = document.querySelector("#join");
     const callBtn = document.querySelector("#call");
 
+    const statusLine = document.querySelector("#status");
+    const minsBox = document.querySelector("#mins");
+
     if (!joinBtn || !callBtn) throw new Error("button missing");
 
     let rows = [];
@@ -58,12 +61,25 @@
       document.querySelector("#longest").textContent = nums.length ? Math.max(...nums) : 0;
     }
 
-        function onJoin(event) {
+            function onJoin(event) {
       event.preventDefault();
       const fd = new FormData(form);
       const name = fd.get("who");
       const bay = fd.get("bay");
-      const mins = Number(fd.get("mins"));
+      const raw = fd.get("mins");
+
+      if (name === null || name.trim() === "") {
+        statusLine.textContent = "undefined";
+        return;
+      }
+
+      const mins = Number(raw);
+      if (raw === null || raw.trim() === "" || Number.isNaN(mins)) {
+        minsBox.setCustomValidity("not a number");
+        minsBox.reportValidity();
+        return;
+      }
+      minsBox.setCustomValidity("");
 
       const clean = name.trim();
       const found = rows.find(r => r.name === clean && r.bay === bay);
@@ -75,7 +91,14 @@
       draw();
     }
 
-    function onCall() {
+        function onCall() {
+      let best = -1;
+      for (let i = 0; i < rows.length; i++) {
+        if (Number.isFinite(rows[i].mins) &&
+            (best === -1 || rows[i].mins >= rows[best].mins)) best = i;
+      }
+      if (best !== -1) rows.splice(best, 1);
+      draw();
     }
 
     form.addEventListener("submit", onJoin);
